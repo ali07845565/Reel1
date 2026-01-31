@@ -1,0 +1,33 @@
+# Render Blueprint for Viral Reel Generator Backend
+services:
+  - type: web
+    name: viral-reel-generator-api
+    runtime: python
+    plan: standard
+    buildCommand: |
+      apt-get update && apt-get install -y ffmpeg
+      pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: OPENAI_API_KEY
+        sync: false  # Set in Render dashboard
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: DOWNLOAD_PATH
+        value: /tmp/downloads
+      - key: OUTPUT_PATH
+        value: /tmp/outputs
+      - key: TEMP_PATH
+        value: /tmp/temp
+      - key: WHISPER_MODEL
+        value: large-v3
+      - key: LLM_MODEL
+        value: gpt-4o
+    disk:
+      name: temp-storage
+      mountPath: /tmp
+      sizeGB: 10
